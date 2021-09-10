@@ -1,10 +1,12 @@
 package game.Blackjack;
 
+import game.Blackjack.cards.Card;
+
 import java.util.Collections;
 import java.util.List;
 
 public class Display {
-    public static void cards(List<Cards> list) {
+    public static void cards(List<Card> list) {
 //        Collections.sort(list, Cards::compareTo);
 //        System.out.println(Color.BLUE);
         StringBuilder cards = new StringBuilder();

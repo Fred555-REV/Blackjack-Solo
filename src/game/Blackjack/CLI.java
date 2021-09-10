@@ -1,5 +1,4 @@
 package game.Blackjack;
 
-public class Actor {
-
+public class CLI {
 }

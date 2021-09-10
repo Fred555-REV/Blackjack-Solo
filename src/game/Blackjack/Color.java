@@ -1,6 +1,9 @@
 package game.Blackjack;
 
 
+import game.Blackjack.actors.Actor;
+import game.Blackjack.actors.Player;
+
 import java.util.Locale;
 
 public enum Color {
@@ -125,8 +128,8 @@ public enum Color {
         this.code = code;
     }
 
-    public static Object getColor(Player player) {
-        switch (player.getColor().toUpperCase(Locale.ROOT)) {
+    public static Object getColor(Actor actor) {
+        switch (actor.getColor().toUpperCase(Locale.ROOT)) {
             case "RED":
                 return RED;
             case "ORANGE":
