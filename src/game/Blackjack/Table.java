@@ -11,6 +11,55 @@ public class Table {
     //ie. 208 cards in one deck shuffled or 52 cards in 4 decks shuffled and changing decks
     private Deck deck;
     private List<Actor> actors;
+    private Turn turn;
+    private final List<String> CONTROL_MENU = List.of(
+            "(1) Hit",
+            "(2) Stand",
+            "(3) DoubleDown",
+            "(4) Split",
+            "(5) Surrender"
+    );
+
+    public Table() {
+
+    }
+
+    public void setup() {
+
+
+    }
+    //TODO Check over progress logically
+    public void round() {
+        boolean isRunning = true;
+        while (roundIsNotOver()) {
+
+        }
+        for (Actor actor : actors) {
+            actor.clearHands();
+        }
+    }
+
+    public void getSelection(Actor actor) {
+        CONTROL_MENU.forEach(System.out::println);
+
+    }
+
+    private boolean roundIsNotOver() {
+        int counter = 0;
+        for (Actor actor : actors) {
+            if (actor.isPlaying()) {
+                counter++;
+            }
+        }
+        if (counter == 0) {
+            return false;
+        }
+        return true;
+    }
+
+    private Actor getActivePlayer() {
+        return actors.get(turn.getCounter());
+    }
 
 }
 //TODO instructions research

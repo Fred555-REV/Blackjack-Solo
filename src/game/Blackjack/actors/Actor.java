@@ -8,22 +8,65 @@ public abstract class Actor {
     // Each actor has a hand and each table has a deck
     protected String name;
     protected String color;
+    protected int wallet;
+    protected int activeHandCounter;// 0 is done playing       1 and 3 is hand 1       2 and 4 is hand 2
+    // 1 is hand if there
+    //if splitHand is not empty activeHand changes from 1 and 2
+    //if you stand while splitHand is active activeHand stays at 3
+    //if you stand while hand is active and splitHand is nonEmpty activeHand stays at 0
     protected List<Card> hand;
+    protected List<Card> splitHand;
+    protected int betHand;
+    protected int betSplit;
+    private boolean isPlaying;
+
+
+    public Actor(String name, String color, int wallet) {
+        this.name = name;
+        this.color = color;
+        this.wallet = wallet;
+        isPlaying = false;
+    }
+
+    public void getCard(Card card) {
+        hand.add(card);
+    }
 
     //TODO hit method,
     // Take another card.
-    abstract void hit();
+    public void hit(Card card) {
+        getActiveHand().add(card);
+        changeHand();
+    }
 
     //TODO stand method,
     // Take no more cards; also known as "stand pat", "stick", or "stay".
-    abstract void stand();
+    public void stand() {
+        //TODO Check over progress logically
+        // make sure everything makes sense
+        switch (activeHandCounter) {
+            case 1:
+                if (splitHand.size() == 0) {
+                    isPlaying = false;
+                } else activeHandCounter = 4;
+                break;
+            case 2:
+                activeHandCounter = 3;
+                break;
+            case 3:
+            case 4:
+                isPlaying = false;
+                break;
+        }
+    }
 
     //TODO doubleDown method,
     // Increase the initial bet by 100% and take exactly one more card.
     //Some games permit the player to increase the bet by amounts smaller than 100%.
     //TODO research non-controlling player
     //!!Non-controlling players may or may not double their wager, but they still only take one card.!!
-    abstract void doubleDown();
+    public void doubleDown() {
+    }
 
     //TODO split method,
     // Create two hands from a starting hand where both cards are the same value.
@@ -31,11 +74,19 @@ public abstract class Actor {
     //The two hands are played out independently, and the wager on each hand is won or lost independently.
     // In the case of cards worth 10 points, some casinos only allow splitting when the cards are the same rank.
     //!!Non-controlling players can opt to put up a second bet or not. If they do not, they only get paid or lose on one of the two post-split hands.!!
-    abstract void split();
+    public void split() {
+        splitHand.add(hand.get(hand.size() - 1));
+    }
 
     //TODO surrender method,
     // Forfeit half the bet and end the hand immediately.
-    abstract void surrender();
+    public void surrender() {
+    }
+
+    //TODO where bet is called make a check for enough money
+    public void bet(int amount) {
+        wallet -= amount;
+    }
 
     //TODO research/implement insurance (optional)
     //If the dealer shows an ace, an "insurance" bet is allowed. Insurance is a side bet that the dealer has a blackjack.
@@ -53,5 +104,44 @@ public abstract class Actor {
 
     public String getColor() {
         return color;
+    }
+
+    public int getWallet() {
+        return wallet;
+    }
+
+    //TODO Check over progress logically
+    // make sure everything makes sense
+    private void changeHand() {
+        switch (activeHandCounter) {
+            case 1:
+                activeHandCounter = 2;
+                break;
+            case 2:
+                activeHandCounter = 1;
+                break;
+        }
+        if (activeHandCounter == 1) {
+            activeHandCounter = 2;
+        } else if (activeHandCounter == 2) {
+            activeHandCounter = 1;
+        }
+    }
+
+    public void clearHands() {
+        hand.removeAll(hand);
+        splitHand.removeAll(splitHand);
+
+    }
+
+    private List<Card> getActiveHand() {
+        if (activeHandCounter == 2 || activeHandCounter == 4) {
+            return splitHand;
+        }
+        return hand;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
     }
 }
