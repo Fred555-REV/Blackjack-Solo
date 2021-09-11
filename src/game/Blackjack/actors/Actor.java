@@ -115,16 +115,14 @@ public abstract class Actor {
     private void changeHand() {
         switch (activeHandCounter) {
             case 1:
-                activeHandCounter = 2;
+                //If there is a split hand change hand if not then stay the same
+                if (splitHand.size() > 0) {
+                    activeHandCounter = 2;
+                }
                 break;
             case 2:
                 activeHandCounter = 1;
                 break;
-        }
-        if (activeHandCounter == 1) {
-            activeHandCounter = 2;
-        } else if (activeHandCounter == 2) {
-            activeHandCounter = 1;
         }
     }
 
