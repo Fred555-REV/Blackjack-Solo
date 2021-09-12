@@ -1,14 +1,17 @@
 package game.Blackjack;
 
 import game.Blackjack.actors.Actor;
+import game.Blackjack.actors.Player;
 import game.Blackjack.cards.Card;
 import game.Blackjack.cards.Deck;
 
 import java.util.List;
+import java.util.Scanner;
 
 public class Table {
     //TODO test single large deck vs multiple normal decks
     //ie. 208 cards in one deck shuffled or 52 cards in 4 decks shuffled and changing decks
+    private static final Scanner scan = new Scanner(System.in);
     private Deck deck;
     private List<Actor> actors;
     private Turn turn;
@@ -25,13 +28,27 @@ public class Table {
     }
 
     public void setup() {
+        System.out.println("Welcome To Blackjack");
+        int playerAmount = Validate.inputInt("How many players will be playing?", 1, 5);
 
 
     }
+
+    private void draw(){
+
+    }
+
     //TODO Check over progress logically
     public void round() {
-        boolean isRunning = true;
+
         while (roundIsNotOver()) {
+            //Player plays hand then changes hand
+            getSelection(getActivePlayer());
+            getActivePlayer().changeHand();
+            if (getActivePlayer().getActiveHandCounter() != 0) {
+                getSelection(getActivePlayer());
+                getActivePlayer().changeHand();
+            }
 
         }
         for (Actor actor : actors) {
@@ -41,6 +58,19 @@ public class Table {
 
     public void getSelection(Actor actor) {
         CONTROL_MENU.forEach(System.out::println);
+        int selection = Validate.inputInt("", 1, 1);
+        switch (selection) {
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+        }
 
     }
 
@@ -59,6 +89,24 @@ public class Table {
 
     private Actor getActivePlayer() {
         return actors.get(turn.getCounter());
+    }
+
+
+    private void displayActivePlayer() {
+        System.out.printf("%sIt is %s's turn\n"
+                , Color.getColor(getActivePlayer()),
+                getActivePlayer().getName());
+
+        //TODO make a display active hand method
+
+    }
+
+    private void addPlayer() {
+        System.out.println();
+        String name = scan.next();
+        System.out.println();
+        String color = scan.next();
+        actors.add(new Player(name, color, 50_00));
     }
 
 }

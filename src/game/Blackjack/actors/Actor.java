@@ -112,8 +112,10 @@ public abstract class Actor {
 
     //TODO Check over progress logically
     // make sure everything makes sense
-    private void changeHand() {
+    public void changeHand() {
         switch (activeHandCounter) {
+            case 0:
+                activeHandCounter = 1;
             case 1:
                 //If there is a split hand change hand if not then stay the same
                 if (splitHand.size() > 0) {
@@ -123,6 +125,8 @@ public abstract class Actor {
             case 2:
                 activeHandCounter = 1;
                 break;
+            default:
+                activeHandCounter = 0;
         }
     }
 
@@ -132,11 +136,15 @@ public abstract class Actor {
 
     }
 
-    private List<Card> getActiveHand() {
+    public List<Card> getActiveHand() {
         if (activeHandCounter == 2 || activeHandCounter == 4) {
             return splitHand;
         }
         return hand;
+    }
+
+    public int getActiveHandCounter() {
+        return activeHandCounter;
     }
 
     public boolean isPlaying() {
