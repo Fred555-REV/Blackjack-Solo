@@ -16,11 +16,15 @@ public class Turn {
     //TODO Check over passing logically
     protected void pass(List<Actor> actors) {
 
-        while (!actors.get(turnCounter).isPlaying()) {
-            turnCounter++;
-            if (turnCounter >= actors.size()) {
-                turnCounter = 0;
-            }
+//        while (!actors.get(turnCounter).isPlaying()) {
+//            turnCounter++;
+//            if (turnCounter >= actors.size()) {
+//                turnCounter = 0;
+//            }
+//        }
+        turnCounter++;
+        if (turnCounter >= actors.size()) {
+            turnCounter = 0;
         }
     }
 

@@ -26,7 +26,7 @@ public abstract class Actor {
         this.name = name;
         this.color = color;
         this.wallet = wallet;
-        isPlaying = false;
+        isPlaying = true;
     }
 
     public void getCard(Card card) {
@@ -66,7 +66,14 @@ public abstract class Actor {
     //Some games permit the player to increase the bet by amounts smaller than 100%.
     //TODO research non-controlling player
     //!!Non-controlling players may or may not double their wager, but they still only take one card.!!
-    public void doubleDown() {
+    public void doubleDown(Card card) {
+        if (getActiveHand().equals(hand)) {
+            bet(betHand * 2);
+        } else {
+            bet(betSplit * 2);
+        }
+        hit(card);
+        stand();
     }
 
     //TODO split method,
@@ -82,11 +89,40 @@ public abstract class Actor {
     //TODO surrender method,
     // Forfeit half the bet and end the hand immediately.
     public void surrender() {
+        if (getActiveHand().equals(hand)) {
+            betHand /= 2;
+        } else {
+            betSplit /= 2;
+        }
+        stand();
     }
 
     //TODO where bet is called make a check for enough money
-    public void bet(int amount) {
-        wallet -= amount;
+    public int bet(int amount) {
+        if (getActiveHand().equals(hand)) {
+            betHand += amount;
+            return betHand;
+        } else {
+            betSplit += amount;
+            return betSplit;
+        }
+    }
+
+    public void result(Boolean didWin) {
+        if (didWin) {
+            gain(bet(0));
+        } else {
+            gain(bet(0));
+        }
+
+    }
+
+    public void gain(int amount) {
+
+    }
+
+    public void lose(int amount) {
+
     }
 
     //TODO research/implement insurance (optional)
@@ -111,6 +147,10 @@ public abstract class Actor {
         return wallet;
     }
 
+    public List<Card> getHand() {
+        return hand;
+    }
+
     //TODO Check over progress logically
     // make sure everything makes sense
     public void changeHand() {
@@ -131,9 +171,13 @@ public abstract class Actor {
         }
     }
 
-    public void clearHands() {
+    public void clear() {
         hand.removeAll(hand);
         splitHand.removeAll(splitHand);
+        betHand = 0;
+        betSplit = 0;
+        activeHandCounter = 1;
+        isPlaying = true;
 
     }
 

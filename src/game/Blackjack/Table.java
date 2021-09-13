@@ -18,7 +18,7 @@ public class Table {
     private Deck deckC;
     private List<Card> deck = new ArrayList<>();
     private List<Actor> actors = new ArrayList<>();
-    private Turn turn;
+    private Turn turn = new Turn(10);   //Right now max turns do nothing
     private final List<String> CONTROL_MENU = List.of(
             "(1) Hit",
             "(2) Stand",
@@ -30,10 +30,9 @@ public class Table {
     public Table() {
         //Assignment
         setup();
-        deckC = new Deck();
-        deckC.shuffle();
+
         draw(5);
-        for(Actor actor: actors){
+        for (Actor actor : actors) {
             System.out.println(actor.getName());
             System.out.println(actor.getActiveHand());
         }
@@ -54,13 +53,30 @@ public class Table {
 //                    System.out.println("Nice");
 //                    break;
 //            }
+
+
+//      This is first test of drawing
+//      setup();
+//      deckC = new Deck();
+//      deckC.shuffle();
+//      draw(5);
+//      for (Actor actor : actors) {
+//          System.out.println(actor.getName());
+//          System.out.println(actor.getActiveHand());
+//      }
+
+//      Test 2
+            System.out.println(Color.GREEN + "Setting Up" + Color.RESET);
             setup();
-            deckC = new Deck();
-            deckC.shuffle();
-            draw(5);
-            for(Actor actor: actors){
-                System.out.println(actor.getName());
-                System.out.println(actor.getActiveHand());
+            System.out.println(Color.GREEN + "Drawing 2" + Color.RESET);
+            draw(2);
+            System.out.println(Color.GREEN + "Starting test run" + Color.RESET);
+            //added roundisnotover to test if stand/surrender is working
+            while (roundIsNotOver()) {
+                // Hit is working fine
+                //
+                getSelection(getActivePlayer());
+                turn.pass(actors);
             }
 
         } else {
@@ -115,13 +131,16 @@ public class Table {
         for (int i = 0; i < playerAmount; i++) {
             addPlayer();
         }
+        //deck creation happens at setUp for now
+        deckC = new Deck();
+        deckC.shuffle();
     }
 
     private void draw(int drawAmount) {
         for (int i = 0; i < drawAmount; i++) {
             for (Actor actor : actors) {
-                System.out.println(actor.getName());
-                System.out.println(deckC);
+//                System.out.println(actor.getName());
+//                System.out.println(deckC);
                 List<Card> cards = deckC.getCards();
                 actor.getCard(cards.remove((cards.size() - 1)));
             }
@@ -129,12 +148,21 @@ public class Table {
     }
 
     //TODO Check over progress logically
+    // at some point in the round there should be a bet method
+    // probably everyone bets before they play instead of everyone betting and playing a turn
     public void round() {
         System.out.println("Drawing Cards...");
         draw(2);
 
+        //This checks every turn if all the people have stopped playing
+        // with either stand, double down, or surrender
         while (roundIsNotOver()) {
+            for(Actor actor: actors){
+                //TODO try bet here
+
+            }
             //Player plays hand then changes hand
+            //The logic for if there is no other hand is in changehand method in actor
             getSelection(getActivePlayer());
             getActivePlayer().changeHand();
             if (getActivePlayer().getActiveHandCounter() != 0) {
@@ -144,25 +172,53 @@ public class Table {
 
         }
         for (Actor actor : actors) {
-            actor.clearHands();
+            actor.clear();
         }
     }
 
     public void getSelection(Actor actor) {
+        displayActivePlayer();
         CONTROL_MENU.forEach(System.out::println);
-        int selection = Validate.inputInt("", 1, 1);
+        int selection = Validate.inputInt("", 1, 10);
         switch (selection) {
             case 1:
+                hit();
                 break;
             case 2:
+                stand();
                 break;
             case 3:
+                doubleDown();
                 break;
             case 4:
+                split();
                 break;
             case 5:
+                surrender();
                 break;
         }
+
+    }
+
+    private void hit() {
+        getActivePlayer().hit(getTopCard());
+    }
+
+    private void stand() {
+        getActivePlayer().stand();
+    }
+
+    private void doubleDown() {
+        getActivePlayer().doubleDown(getTopCard());
+    }
+
+    private void split() {
+        getActivePlayer().split();
+
+    }
+
+    private void surrender() {
+        getActivePlayer().surrender();
 
     }
 
@@ -180,6 +236,7 @@ public class Table {
     }
 
     private Actor getActivePlayer() {
+        //At the moment error happens here after drawing
         return actors.get(turn.getCounter());
     }
 
@@ -190,6 +247,13 @@ public class Table {
                 getActivePlayer().getName());
 
         //TODO make a display active hand method
+        String hand;
+        if (getActivePlayer().getActiveHand() == getActivePlayer().getHand()) {
+            hand = "Main Hand";
+        } else {
+            hand = "Split Hand";
+        }
+        System.out.printf("Using %s\n%s\n", hand, getActivePlayer().getActiveHand());
 
     }
 
@@ -199,6 +263,11 @@ public class Table {
         System.out.println("Enter Color: ");
         String color = scan.next();
         actors.add(new Player(name, color, 50_00));
+    }
+
+    private Card getTopCard() {
+        return deckC.getCards().remove(deckC.getCards().size() - 1);
+
     }
 
 }
