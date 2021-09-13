@@ -43,6 +43,7 @@ public class Table {
     }
 
     public Table(int x, int y, int z, String word) {
+        //Freddy's Testing Table
         if (x == 5 && y == x && z == y && word.equals("ChickEn")) {
             System.out.println("Hello Freddy");
 

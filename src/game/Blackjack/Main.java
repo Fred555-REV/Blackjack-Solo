@@ -6,6 +6,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Table table = new Table(5, 5, 5, "ChickEn");
+        Table table = new Table();
     }
 }
