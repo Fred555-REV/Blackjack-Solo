@@ -2,6 +2,7 @@ package game.Blackjack.actors;
 
 import game.Blackjack.cards.Card;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Actor {
@@ -14,8 +15,8 @@ public abstract class Actor {
     //if splitHand is not empty activeHand changes from 1 and 2
     //if you stand while splitHand is active activeHand stays at 3
     //if you stand while hand is active and splitHand is nonEmpty activeHand stays at 0
-    protected List<Card> hand;
-    protected List<Card> splitHand;
+    protected List<Card> hand = new ArrayList<>();
+    protected List<Card> splitHand = new ArrayList<>();
     protected int betHand;
     protected int betSplit;
     private boolean isPlaying;

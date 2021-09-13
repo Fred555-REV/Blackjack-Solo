@@ -1,9 +1,16 @@
 package game.Blackjack;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Validate {
+    public static List<String> CHEATS = List.of(
+            "FREDDY",
+            "FRED",
+            "SHACO",
+            "SHAGGY"
+    );
 
     public static int inputInt(String prompt) {
         if (!prompt.equals("")) {
