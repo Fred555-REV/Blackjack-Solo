@@ -56,7 +56,7 @@ public class Table {
 
 //      Test 2
             System.out.println(Color.GREEN + "Setting Up" + Color.RESET);
-            setup();
+            setup(2);
             System.out.println(Color.GREEN + "Drawing 2" + Color.RESET);
             draw(2);
             System.out.println(Color.GREEN + "Starting test run" + Color.RESET);
