@@ -3,20 +3,19 @@ package game.Blackjack;
 import game.Blackjack.actors.Actor;
 import game.Blackjack.actors.CasinoDealer;
 import game.Blackjack.actors.Player;
-import game.Blackjack.cards.Card;
+import game.Blackjack.cards.PlayingCards;
 import game.Blackjack.cards.Deck;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class Table {
     //TODO test single large deck vs multiple normal decks
     //ie. 208 cards in one deck shuffled or 52 cards in 4 decks shuffled and changing decks
     private static final Scanner scan = new Scanner(System.in);
-    private Deck deckC;
-    private List<Card> deck = new ArrayList<>();
+    private Deck deck;
+//    private List<Card> deck = new ArrayList<>();
     private List<Actor> actors = new ArrayList<>();
     private Turn turn = new Turn(10);   //Right now max turns do nothing
     private final List<String> CONTROL_MENU = List.of(
@@ -28,6 +27,7 @@ public class Table {
     );
 
     public Table() {
+        deck = new Deck();
     }
 
     public Table(int x, int y, int z, String word) {
@@ -82,14 +82,15 @@ public class Table {
             addPlayer();
         }
         //deck creation happens at setUp for now
-        deckC = new Deck();
-        deckC.shuffle();
+        deck.createDeck();
+        deck.shuffle();
 
         draw(drawAmount);
         if (drawAmount == 5) {
             for (Actor actor : actors) {
-                System.out.println(actor.getName());
+                System.out.println(Color.getColor(actor) + actor.getName());
                 System.out.println(actor.getActiveHand());
+                System.out.print(Color.RESET);
             }
         }
 
@@ -100,8 +101,8 @@ public class Table {
             for (Actor actor : actors) {
 //                System.out.println(actor.getName());
 //                System.out.println(deckC);
-                List<Card> cards = deckC.getCards();
-                actor.getCard(cards.remove((cards.size() - 1)));
+                List<PlayingCards> playingCards = deck.getCards();
+                actor.getCard(playingCards.remove((playingCards.size() - 1)));
             }
         }
     }
@@ -224,11 +225,14 @@ public class Table {
         actors.add(new Player(name, color, 50_00));
     }
 
-    private Card getTopCard() {
-        return deckC.getCards().remove(deckC.getCards().size() - 1);
+    private PlayingCards getTopCard() {
+        return deck.getCards().remove(deck.getCards().size() - 1);
 
     }
 
+    public Deck getDeck() {
+        return deck;
+    }
 }
 //TODO instructions research
 /*

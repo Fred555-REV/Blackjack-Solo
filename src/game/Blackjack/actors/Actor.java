@@ -1,6 +1,6 @@
 package game.Blackjack.actors;
 
-import game.Blackjack.cards.Card;
+import game.Blackjack.cards.PlayingCards;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +15,8 @@ public abstract class Actor {
     //if splitHand is not empty activeHand changes from 1 and 2
     //if you stand while splitHand is active activeHand stays at 3
     //if you stand while hand is active and splitHand is nonEmpty activeHand stays at 0
-    protected List<Card> hand = new ArrayList<>();
-    protected List<Card> splitHand = new ArrayList<>();
+    protected List<PlayingCards> hand = new ArrayList<>();
+    protected List<PlayingCards> splitHand = new ArrayList<>();
     protected int betHand;
     protected int betSplit;
     private boolean isPlaying;
@@ -29,14 +29,14 @@ public abstract class Actor {
         isPlaying = true;
     }
 
-    public void getCard(Card card) {
-        hand.add(card);
+    public void getCard(PlayingCards playingCards) {
+        hand.add(playingCards);
     }
 
     //TODO hit method,
     // Take another card.
-    public void hit(Card card) {
-        getActiveHand().add(card);
+    public void hit(PlayingCards playingCards) {
+        getActiveHand().add(playingCards);
         changeHand();
     }
 
@@ -72,13 +72,13 @@ public abstract class Actor {
     //Some games permit the player to increase the bet by amounts smaller than 100%.
     //TODO research non-controlling player
     //!!Non-controlling players may or may not double their wager, but they still only take one card.!!
-    public void doubleDown(Card card) {
+    public void doubleDown(PlayingCards playingCards) {
         if (getActiveHand().equals(hand)) {
             bet(betHand * 2);
         } else {
             bet(betSplit * 2);
         }
-        hit(card);
+        hit(playingCards);
         stand();
     }
 
@@ -153,7 +153,7 @@ public abstract class Actor {
         return wallet;
     }
 
-    public List<Card> getHand() {
+    public List<PlayingCards> getHand() {
         return hand;
     }
 
@@ -187,7 +187,7 @@ public abstract class Actor {
 
     }
 
-    public List<Card> getActiveHand() {
+    public List<PlayingCards> getActiveHand() {
         if (activeHandCounter == 2 || activeHandCounter == 4) {
             return splitHand;
         }
