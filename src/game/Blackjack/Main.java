@@ -6,6 +6,10 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Table table = new Table(5,5,5,"ChickEn");
+        Table table = new Table();
+        //Assignment
+        //setup creates dealer if needed/wanted and players
+        //also creates the deck and for the assignment displays all cards drawn
+        table.setup(5);
     }
 }

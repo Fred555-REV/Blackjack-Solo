@@ -28,17 +28,6 @@ public class Table {
     );
 
     public Table() {
-        //Assignment
-        setup();
-
-        draw(5);
-        for (Actor actor : actors) {
-            System.out.println(actor.getName());
-            System.out.println(actor.getActiveHand());
-        }
-
-//        setup();
-//        createDeck();
     }
 
     public Table(int x, int y, int z, String word) {
@@ -113,7 +102,7 @@ public class Table {
 //        System.out.println(deck.get(deck.size() - 1));
     }
 
-    public void setup() {
+    public void setup(int drawAmount) {
         System.out.println("Welcome To Blackjack");
 
         int leader = Validate.inputInt("Will there be a dealer? (1) Yes\t (2) No", 1, 2);
@@ -134,6 +123,15 @@ public class Table {
         //deck creation happens at setUp for now
         deckC = new Deck();
         deckC.shuffle();
+
+        draw(drawAmount);
+        if (drawAmount == 5) {
+            for (Actor actor : actors) {
+                System.out.println(actor.getName());
+                System.out.println(actor.getActiveHand());
+            }
+        }
+
     }
 
     private void draw(int drawAmount) {
@@ -157,7 +155,7 @@ public class Table {
         //This checks every turn if all the people have stopped playing
         // with either stand, double down, or surrender
         while (roundIsNotOver()) {
-            for(Actor actor: actors){
+            for (Actor actor : actors) {
                 //TODO try bet here
 
             }
