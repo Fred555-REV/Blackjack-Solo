@@ -43,17 +43,6 @@ public class Table {
 //                    break;
 //            }
 
-
-//      This is first test of drawing
-//      setup();
-//      deckC = new Deck();
-//      deckC.shuffle();
-//      draw(5);
-//      for (Actor actor : actors) {
-//          System.out.println(actor.getName());
-//          System.out.println(actor.getActiveHand());
-//      }
-
 //      Test 2
             System.out.println(Color.GREEN + "Setting Up" + Color.RESET);
             setup(2);
@@ -72,34 +61,6 @@ public class Table {
             System.out.println("BEGONE");
             System.exit(555);
         }
-    }
-
-    //TODO idk if I want a deck class or a list of cards as the deck
-    public void createDeck() {
-
-        int deckAmount = Validate.inputInt("How many decks?", 3, 6);
-//Can create any amount of full decks of 52 total of 208
-        for (int i = 0; i < deckAmount; i++) {
-            for (int j = 0; j < Card.values.size(); j++) {
-                for (int k = 0; k < Card.suits.size(); k++) {
-//                System.out.printf("I %s | K %s\n",i,k);
-                    deck.add(new Card(j, k, 1));
-                }
-            }
-
-        }
-//        int count = 0;
-//        for (Card card : deck) {
-//            System.out.println(card + "   " + (count++));
-//
-//        }
-        //TODO use remove to add the card to each player it returns the card while removing
-        // no need to do switcheroo
-//        System.out.println(deck.remove(deck.size() - 1));
-//        System.out.println(deck.get(deck.size() - 1));
-//        Card card = deck.remove(deck.size() - 1);
-//        System.out.println(card);
-//        System.out.println(deck.get(deck.size() - 1));
     }
 
     public void setup(int drawAmount) {

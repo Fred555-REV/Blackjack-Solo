@@ -48,14 +48,20 @@ public abstract class Actor {
         switch (activeHandCounter) {
             case 1:
                 if (splitHand.size() == 0) {
+                    System.out.println("Done Playing");
                     isPlaying = false;
-                } else activeHandCounter = 4;
+                } else {
+                    System.out.println("Changed hand");
+                    activeHandCounter = 4;
+                }
                 break;
             case 2:
+                    System.out.println("Changed hand");
                 activeHandCounter = 3;
                 break;
             case 3:
             case 4:
+                System.out.println("Done Playing");
                 isPlaying = false;
                 break;
         }

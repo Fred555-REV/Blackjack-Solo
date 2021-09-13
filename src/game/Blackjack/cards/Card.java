@@ -28,7 +28,6 @@ public class Card {
     private String name;
     private int value;
     private String suit;
-    public final List<Integer> positions = new ArrayList<>();
     private int position;
 
     protected Card(int valueI, int suitI) {
@@ -43,7 +42,7 @@ public class Card {
         value = getValue(valueI);
         suit = suits.get(suitI);
         name = String.format("%s of %s",
-                values.get(valueI), suits.get(suitI));
+                value, suit);
 
     }
 
@@ -54,21 +53,17 @@ public class Card {
     }
 
     public void move(int deckSize) {
-        do {
             position = (int) Math.floor(Math.random() * deckSize);
-        }
-        while (positions.contains(position));
-            positions.add(position);
     }
 
     public int compareTo(Card compareCard) {
         int comparage = compareCard.position;
-        return this.position-comparage;
+        return this.position - comparage;
     }
 
     @Override
     public String toString() {
         //TODO add the card display to the to string
-        return name + "\n";
+        return "\n" + name;
     }
 }

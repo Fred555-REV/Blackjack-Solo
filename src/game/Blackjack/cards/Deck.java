@@ -17,12 +17,11 @@ public class Deck {
             for (int j = 0; j < Card.values.size(); j++) {
                 for (int k = 0; k < Card.suits.size(); k++) {
 //                System.out.printf("I %s | K %s\n",i,k);
-                    cards.add(new Card(j, k, 1));
+                    cards.add(new Card(j, k,1));
                 }
             }
         }
         shuffle();
-        System.out.println(cards);
     }
 
     public void shuffle() {
@@ -38,7 +37,6 @@ public class Deck {
     @Override
     public String toString() {
         return "Deck{" +
-                "cards=" + cards +
-                '}';
+                "cards=" + cards + "}";
     }
 }
