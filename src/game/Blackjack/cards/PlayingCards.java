@@ -24,9 +24,9 @@ public class PlayingCards {
             "Hearts",
             "Spades"
     );
-    private String name;
-    private String rank;
-    private String suit;
+    private final String name;
+    private final String rank;
+    private final String suit;
     private int position;
 
     protected PlayingCards(String rank, String suit) {

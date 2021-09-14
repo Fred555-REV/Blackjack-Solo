@@ -31,44 +31,11 @@ public class Table {
         deck = new Deck();
     }
 
-    public Table(int x, int y, int z, String word) {
-        //Freddy's Testing Table
-        if (x == 5 && y == x && z == y && word.equals("ChickEn")) {
-            System.out.println("Hello Freddy");
-
-            //TODO make test controls
-//            int selection = Validate.inputInt("What do you want to test?");
-//            switch (selection) {
-//                default:
-//                    System.out.println("Nice");
-//                    break;
-//            }
-
-//      Test 2
-            System.out.println(Color.GREEN + "Setting Up" + Color.RESET);
-            setup(2);
-            System.out.println(Color.GREEN + "Drawing 2" + Color.RESET);
-            draw(2);
-            System.out.println(Color.GREEN + "Starting test run" + Color.RESET);
-            //added roundisnotover to test if stand/surrender is working
-            while (roundIsNotOver()) {
-                // Hit is working fine
-                //
-                getSelection(getActivePlayer());
-                turn.pass(actors);
-            }
-
-        } else {
-            System.out.println("BEGONE");
-            System.exit(555);
-        }
-    }
-
     private void changeDeck() {
         //maybe have a change deck?
     }
 
-    public void setup(int drawAmount) {
+    public void setup() {
         System.out.println("Welcome To Blackjack");
 
         createDealer();
@@ -77,7 +44,6 @@ public class Table {
         //deck creation happens at setUp for now
         deck.createDeck();
         deck.shuffle();
-        draw(drawAmount);
 
     }
 
@@ -115,12 +81,13 @@ public class Table {
     //TODO Check over progress logically
     // at some point in the round there should be a bet method
     // probably everyone bets before they play instead of everyone betting and playing a turn
-    public void round() {
+    public void round(int drawAmount) {
         System.out.println("Drawing Cards...");
-        draw(2);
+        draw(drawAmount);
         bet();
         while (roundIsNotOver()) {
             turn();
+            turn.pass(actors);
         }
         clearTable();
     }

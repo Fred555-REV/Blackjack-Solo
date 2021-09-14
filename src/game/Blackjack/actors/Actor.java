@@ -27,11 +27,16 @@ public abstract class Actor {
         this.color = color;
         this.wallet = wallet;
         isPlaying = true;
+        activeHandCounter = 1;
     }
 
     public void getCard(PlayingCards playingCards) {
         hand.add(playingCards);
     }
+
+    //TODO make a branch to change the change hand method
+    // refactor everything so instead of one action per hand
+    // to play each hand until a stand or end
 
     //TODO hit method,
     // Take another card.
@@ -56,7 +61,7 @@ public abstract class Actor {
                 }
                 break;
             case 2:
-                    System.out.println("Changed hand");
+                System.out.println("Changed hand");
                 activeHandCounter = 3;
                 break;
             case 3:
@@ -161,8 +166,8 @@ public abstract class Actor {
     // make sure everything makes sense
     public void changeHand() {
         switch (activeHandCounter) {
-            case 0:
-                activeHandCounter = 1;
+//            case 0:
+//                activeHandCounter = 1;
             case 1:
                 //If there is a split hand change hand if not then stay the same
                 if (splitHand.size() > 0) {
@@ -192,6 +197,13 @@ public abstract class Actor {
             return splitHand;
         }
         return hand;
+    }
+
+    public boolean hasSplitHand(){
+        if(splitHand.size()>0){
+            return true;
+        }
+        return false;
     }
 
     public int getActiveHandCounter() {
