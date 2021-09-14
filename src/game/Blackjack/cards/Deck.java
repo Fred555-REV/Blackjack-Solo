@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Deck {
+public class Deck implements DeckInterface {
     private List<PlayingCards> playingCards = new ArrayList<>();
 
     public Deck() {
@@ -14,14 +14,14 @@ public class Deck {
 
     }
 
-    public void createDeck(){
+    public void createDeck() {
         int deckAmount = Validate.inputInt("How many decks? 3-6", 3, 6);
 //Can create any amount of full decks of 52 total of 208
         for (int i = 0; i < deckAmount; i++) {
             for (int j = 0; j < PlayingCards.values.size(); j++) {
                 for (int k = 0; k < PlayingCards.suits.size(); k++) {
 //                System.out.printf("I %s | K %s\n",i,k);
-                    playingCards.add(new PlayingCards(j, k,1));
+                    playingCards.add(new PlayingCards(j, k, 1));
                 }
             }
         }

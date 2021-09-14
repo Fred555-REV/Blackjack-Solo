@@ -3,6 +3,7 @@ package game.Blackjack;
 import game.Blackjack.actors.Actor;
 import game.Blackjack.actors.CasinoDealer;
 import game.Blackjack.actors.Player;
+import game.Blackjack.cards.DeckInterface;
 import game.Blackjack.cards.PlayingCards;
 import game.Blackjack.cards.Deck;
 
@@ -61,6 +62,10 @@ public class Table {
             System.out.println("BEGONE");
             System.exit(555);
         }
+    }
+
+    private void changeDeck(){
+        //maybe have a change deck?
     }
 
     public void setup(int drawAmount) {
