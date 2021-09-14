@@ -3,7 +3,7 @@ package game.Blackjack.cards;
 import java.util.List;
 
 public class PlayingCards {
-    public static final List<String> values = List.of(
+    public static final List<String> ranks = List.of(
             "A",
             "2",
             "3",
@@ -25,23 +25,23 @@ public class PlayingCards {
             "Spades"
     );
     private String name;
-    private int value;
+    private String rank;
     private String suit;
     private int position;
 
-    protected PlayingCards(int valueI, int suitI) {
-        value = getValue(valueI);
-        suit = suits.get(suitI);
+    protected PlayingCards(String rank, String suit) {
+        this.rank = rank;
+        this.suit = suit;
         name = String.format("%s of %s",
-                values.get(valueI), suits.get(suitI));
+                rank, suit);
 
     }
 
-    public PlayingCards(int valueI, int suitI, int amount) {
-        value = getValue(valueI);
-        suit = suits.get(suitI);
+    public PlayingCards(String rank, String suit, int amount) {
+        this.rank = rank;
+        this.suit = suit;
         name = String.format("%s of %s",
-                values.get(valueI), suit);
+                rank, suit);
 
     }
 

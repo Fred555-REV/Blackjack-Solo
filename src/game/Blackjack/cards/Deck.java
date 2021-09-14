@@ -18,10 +18,9 @@ public class Deck implements DeckInterface {
         int deckAmount = Validate.inputInt("How many decks? 3-6", 3, 6);
 //Can create any amount of full decks of 52 total of 208
         for (int i = 0; i < deckAmount; i++) {
-            for (int j = 0; j < PlayingCards.values.size(); j++) {
-                for (int k = 0; k < PlayingCards.suits.size(); k++) {
-//                System.out.printf("I %s | K %s\n",i,k);
-                    playingCards.add(new PlayingCards(j, k, 1));
+            for (String rank : PlayingCards.ranks) {
+                for (String suit:PlayingCards.suits) {
+                    playingCards.add(new PlayingCards(rank, suit, 1));
                 }
             }
         }
@@ -30,7 +29,7 @@ public class Deck implements DeckInterface {
 
     public void shuffle() {
         playingCards.forEach(card -> card.move(playingCards.size()));
-        Collections.sort(playingCards, PlayingCards::compareTo);
+        playingCards.sort(PlayingCards::compareTo);
         System.out.println(playingCards);
     }
 

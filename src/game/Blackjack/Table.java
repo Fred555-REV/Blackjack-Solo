@@ -16,7 +16,7 @@ public class Table {
     //ie. 208 cards in one deck shuffled or 52 cards in 4 decks shuffled and changing decks
     private static final Scanner scan = new Scanner(System.in);
     private Deck deck;
-//    private List<Card> deck = new ArrayList<>();
+    //    private List<Card> deck = new ArrayList<>();
     private List<Actor> actors = new ArrayList<>();
     private Turn turn = new Turn(10);   //Right now max turns do nothing
     private final List<String> CONTROL_MENU = List.of(
@@ -64,13 +64,31 @@ public class Table {
         }
     }
 
-    private void changeDeck(){
+    private void changeDeck() {
         //maybe have a change deck?
     }
 
     public void setup(int drawAmount) {
         System.out.println("Welcome To Blackjack");
 
+        createDealer();
+
+        createPlayers();
+        //deck creation happens at setUp for now
+        deck.createDeck();
+        deck.shuffle();
+        draw(drawAmount);
+
+    }
+
+    private void createPlayers() {
+        int playerAmount = Validate.inputInt("How many players will be playing?", 1, 5);
+        for (int i = 0; i < playerAmount; i++) {
+            addPlayer();
+        }
+    }
+
+    private void createDealer() {
         int leader = Validate.inputInt("Will there be a dealer? (1) Yes\t (2) No", 1, 2);
         if (leader == 1) {
             System.out.println("Enter Name: ");
@@ -81,24 +99,6 @@ public class Table {
                 actors.add(new CasinoDealer(name, "White", 300_00));
             }
         }
-
-        int playerAmount = Validate.inputInt("How many players will be playing?", 1, 5);
-        for (int i = 0; i < playerAmount; i++) {
-            addPlayer();
-        }
-        //deck creation happens at setUp for now
-        deck.createDeck();
-        deck.shuffle();
-
-        draw(drawAmount);
-        if (drawAmount == 5) {
-            for (Actor actor : actors) {
-                System.out.println(Color.getColor(actor) + actor.getName());
-                System.out.println(actor.getActiveHand());
-                System.out.print(Color.RESET);
-            }
-        }
-
     }
 
     private void draw(int drawAmount) {
@@ -118,26 +118,36 @@ public class Table {
     public void round() {
         System.out.println("Drawing Cards...");
         draw(2);
-
-        //This checks every turn if all the people have stopped playing
-        // with either stand, double down, or surrender
+        bet();
         while (roundIsNotOver()) {
-            for (Actor actor : actors) {
-                //TODO try bet here
-
-            }
-            //Player plays hand then changes hand
-            //The logic for if there is no other hand is in changehand method in actor
-            getSelection(getActivePlayer());
-            getActivePlayer().changeHand();
-            if (getActivePlayer().getActiveHandCounter() != 0) {
-                getSelection(getActivePlayer());
-                getActivePlayer().changeHand();
-            }
-
+            turn();
         }
+        clearTable();
+    }
+
+    private void clearTable() {
         for (Actor actor : actors) {
             actor.clear();
+        }
+    }
+
+    private void turn() {
+        //Player plays hand then changes hand
+        //The logic for if there is no other hand is in changehand method in actor
+        getSelection(getActivePlayer());
+        getActivePlayer().changeHand();
+        if (getActivePlayer().getActiveHandCounter() != 0) {
+            getSelection(getActivePlayer());
+            getActivePlayer().changeHand();
+        }
+
+
+    }
+
+    private void bet() {
+        for (Actor actor : actors) {
+            //TODO try bet here
+
         }
     }
 
