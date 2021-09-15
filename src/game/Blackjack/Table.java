@@ -89,7 +89,31 @@ public class Table {
             turn();
             turn.pass(actors);
         }
+        getResults();
         clearTable();
+    }
+
+    private void turn() {
+        //Player plays hand then changes hand
+        //The logic for if there is no other hand is in changehand method in actor
+//        getSelection(getActivePlayer());
+//        getActivePlayer().changeHand();
+//        if (getActivePlayer().getActiveHandCounter() != 0) {
+//            getSelection(getActivePlayer());
+//            getActivePlayer().changeHand();
+//        }
+        while (getActivePlayer().isPlaying()) {
+            getSelection(getActivePlayer());
+        }
+
+    }
+
+    //TODO at the end before clearing get results
+    // everyone gets compared to dealer
+    private void getResults() {
+        for (Actor actor : actors) {
+            System.out.println(actor);
+        }
     }
 
     private void clearTable() {
@@ -98,18 +122,6 @@ public class Table {
         }
     }
 
-    private void turn() {
-        //Player plays hand then changes hand
-        //The logic for if there is no other hand is in changehand method in actor
-        getSelection(getActivePlayer());
-        getActivePlayer().changeHand();
-        if (getActivePlayer().getActiveHandCounter() != 0) {
-            getSelection(getActivePlayer());
-            getActivePlayer().changeHand();
-        }
-
-
-    }
 
     private void bet() {
         for (Actor actor : actors) {

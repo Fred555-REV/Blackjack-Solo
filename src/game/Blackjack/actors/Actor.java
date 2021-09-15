@@ -1,5 +1,6 @@
 package game.Blackjack.actors;
 
+import game.Blackjack.Color;
 import game.Blackjack.cards.PlayingCards;
 
 import java.util.ArrayList;
@@ -42,7 +43,6 @@ public abstract class Actor {
     // Take another card.
     public void hit(PlayingCards playingCards) {
         getActiveHand().add(playingCards);
-        changeHand();
     }
 
     //TODO stand method,
@@ -50,26 +50,14 @@ public abstract class Actor {
     public void stand() {
         //TODO Check over progress logically
         // make sure everything makes sense
-        switch (activeHandCounter) {
-            case 1:
-                if (splitHand.size() == 0) {
-                    System.out.println("Done Playing");
-                    isPlaying = false;
-                } else {
-                    System.out.println("Changed hand");
-                    activeHandCounter = 4;
-                }
-                break;
-            case 2:
-                System.out.println("Changed hand");
-                activeHandCounter = 3;
-                break;
-            case 3:
-            case 4:
-                System.out.println("Done Playing");
-                isPlaying = false;
-                break;
+        if (splitHand.isEmpty()) {
+            isPlaying = false;
+        } else if (activeHandCounter == 1) {
+            activeHandCounter = 2;
+        } else {
+            isPlaying = false;
         }
+
     }
 
     //TODO doubleDown method,
@@ -79,9 +67,9 @@ public abstract class Actor {
     //!!Non-controlling players may or may not double their wager, but they still only take one card.!!
     public void doubleDown(PlayingCards playingCards) {
         if (getActiveHand().equals(hand)) {
-            bet(betHand * 2);
+            bet(betHand);
         } else {
-            bet(betSplit * 2);
+            bet(betSplit);
         }
         hit(playingCards);
         stand();
@@ -94,7 +82,9 @@ public abstract class Actor {
     // In the case of cards worth 10 points, some casinos only allow splitting when the cards are the same rank.
     //!!Non-controlling players can opt to put up a second bet or not. If they do not, they only get paid or lose on one of the two post-split hands.!!
     public void split() {
-        splitHand.add(hand.get(hand.size() - 1));
+        if (hand.get(0) == hand.get(1)) {
+            splitHand.add(hand.remove(0));
+        }
     }
 
     //TODO surrender method,
@@ -119,32 +109,42 @@ public abstract class Actor {
         }
     }
 
+    //TODO Check over progress logically
+    // make sure everything makes sense
+
+    public void clear() {
+        hand.removeAll(hand);
+        splitHand.removeAll(splitHand);
+        betHand = 0;
+        betSplit = 0;
+        activeHandCounter = 1;
+        isPlaying = true;
+
+    }
+
+    public List<PlayingCards> getActiveHand() {
+        if (activeHandCounter == 2) {
+            return splitHand;
+        }
+        return hand;
+    }
+
     public void result(Boolean didWin) {
         if (didWin) {
             gain(bet(0));
         } else {
-            gain(bet(0));
+            lose(bet(0));
         }
 
     }
 
     public void gain(int amount) {
-
+        wallet += amount;
     }
 
     public void lose(int amount) {
-
+        wallet -= amount;
     }
-
-    //TODO research/implement insurance (optional)
-    //If the dealer shows an ace, an "insurance" bet is allowed. Insurance is a side bet that the dealer has a blackjack.
-    // The dealer asks for insurance bets before the first player plays.
-    // Insurance bets of half the player's current bet are placed on the "insurance bar" above player's cards.
-    // If the dealer has a blackjack, insurance pays 2 to 1.
-    // In most casinos, the dealer looks at the down card and pays off or takes the insurance bet immediately.
-    // In other casinos, the payoff waits until the end of the play.
-    //In face-down games, if a player has more than one hand, they are allowed to look at all their hands before deciding.
-    // This is the only condition where a player can look at multiple hands.
 
     public String getName() {
         return name;
@@ -162,49 +162,6 @@ public abstract class Actor {
         return hand;
     }
 
-    //TODO Check over progress logically
-    // make sure everything makes sense
-    public void changeHand() {
-        switch (activeHandCounter) {
-//            case 0:
-//                activeHandCounter = 1;
-            case 1:
-                //If there is a split hand change hand if not then stay the same
-                if (splitHand.size() > 0) {
-                    activeHandCounter = 2;
-                }
-                break;
-            case 2:
-                activeHandCounter = 1;
-                break;
-            default:
-                activeHandCounter = 0;
-        }
-    }
-
-    public void clear() {
-        hand.removeAll(hand);
-        splitHand.removeAll(splitHand);
-        betHand = 0;
-        betSplit = 0;
-        activeHandCounter = 1;
-        isPlaying = true;
-
-    }
-
-    public List<PlayingCards> getActiveHand() {
-        if (activeHandCounter == 2 || activeHandCounter == 4) {
-            return splitHand;
-        }
-        return hand;
-    }
-
-    public boolean hasSplitHand(){
-        if(splitHand.size()>0){
-            return true;
-        }
-        return false;
-    }
 
     public int getActiveHandCounter() {
         return activeHandCounter;
@@ -212,5 +169,13 @@ public abstract class Actor {
 
     public boolean isPlaying() {
         return isPlaying;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "%sActor: %s,\tBets: {Main: %s\tSplit: %s}\nHands: {Main: %s\nSplit: %s}%s",
+                Color.getColor(this),name,betHand,betSplit,hand,splitHand,Color.RESET
+                );
     }
 }
