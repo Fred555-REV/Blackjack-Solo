@@ -3,11 +3,10 @@ package game.Blackjack.cards;
 import game.Blackjack.Validate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Deck implements DeckInterface {
-    private List<PlayingCards> playingCards = new ArrayList<>();
+    private List<PlayingCards> cards = new ArrayList<>();
 
     public Deck() {
 
@@ -19,8 +18,8 @@ public class Deck implements DeckInterface {
 //Can create any amount of full decks of 52 total of 208
         for (int i = 0; i < deckAmount; i++) {
             for (String rank : PlayingCards.ranks) {
-                for (String suit:PlayingCards.suits) {
-                    playingCards.add(new PlayingCards(rank, suit, 1));
+                for (String suit : PlayingCards.suits) {
+                    cards.add(new PlayingCards(rank, suit));
                 }
             }
         }
@@ -28,18 +27,19 @@ public class Deck implements DeckInterface {
     }
 
     public void shuffle() {
-        playingCards.forEach(card -> card.move(playingCards.size()));
-        playingCards.sort(PlayingCards::compareTo);
-        System.out.println(playingCards);
+        cards.forEach(card -> card.move(cards.size()));
+        cards.sort(PlayingCards::compareTo);
+        System.out.println(cards);
     }
 
-    public List<PlayingCards> getCards() {
-        return playingCards;
+    @Override
+    public PlayingCards deal() {
+        return cards.remove(cards.size() - 1);
     }
 
     @Override
     public String toString() {
         return "Deck{" +
-                "cards=" + playingCards + "}";
+                "cards=" + cards + "}";
     }
 }

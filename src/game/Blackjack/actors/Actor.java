@@ -82,7 +82,7 @@ public abstract class Actor {
     // In the case of cards worth 10 points, some casinos only allow splitting when the cards are the same rank.
     //!!Non-controlling players can opt to put up a second bet or not. If they do not, they only get paid or lose on one of the two post-split hands.!!
     public void split() {
-        if (hand.get(0) == hand.get(1)) {
+        if (hand.get(0).rank.equals(hand.get(1).rank) && splitHand.isEmpty()) {
             splitHand.add(hand.remove(0));
         }
     }
@@ -113,8 +113,8 @@ public abstract class Actor {
     // make sure everything makes sense
 
     public void clear() {
-        hand.removeAll(hand);
-        splitHand.removeAll(splitHand);
+        hand.clear();
+        splitHand.clear();
         betHand = 0;
         betSplit = 0;
         activeHandCounter = 1;
@@ -138,11 +138,11 @@ public abstract class Actor {
 
     }
 
-    public void gain(int amount) {
+    private void gain(int amount) {
         wallet += amount;
     }
 
-    public void lose(int amount) {
+    private void lose(int amount) {
         wallet -= amount;
     }
 
@@ -175,7 +175,7 @@ public abstract class Actor {
     public String toString() {
         return String.format(
                 "%sActor: %s,\tBets: {Main: %s\tSplit: %s}\nHands: {Main: %s\nSplit: %s}%s",
-                Color.getColor(this),name,betHand,betSplit,hand,splitHand,Color.RESET
-                );
+                Color.getColor(this), name, betHand, betSplit, hand, splitHand, Color.RESET
+        );
     }
 }
