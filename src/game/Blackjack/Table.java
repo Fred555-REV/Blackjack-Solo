@@ -8,6 +8,7 @@ import game.Blackjack.cards.DeckInterface;
 import game.Blackjack.cards.PlayingCards;
 import game.Blackjack.cards.Deck;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -72,15 +73,6 @@ public class Table {
         }
     }
 
-    private void draw(int drawAmount) {
-        for (int i = 0; i < drawAmount; i++) {
-            for (Actor actor : actors) {
-//                System.out.println(actor.getName());
-//                System.out.println(deckC);
-                actor.getCard(getTopCard());
-            }
-        }
-    }
 
     //TODO Check over progress logically
     // at some point in the round there should be a bet method
@@ -100,17 +92,59 @@ public class Table {
         }
     }
 
+    private void draw(int drawAmount) {
+        for (int i = 0; i < drawAmount; i++) {
+            for (Actor actor : actors) {
+//                System.out.println(actor.getName());
+//                System.out.println(deckC);
+                actor.getCard(getTopCard());
+            }
+        }
+    }
+
+    private void bet() {
+        for (Actor actor : actors) {
+            //TODO try bet here
+            System.out.printf("%s has %s\n",
+                    actor.getName(),
+                    NumberFormat.getCurrencyInstance().format(actor.getWallet() / 100)
+            );
+            if (actor.getWallet() > 0) {
+                actor.bet(Validate.inputInt("How much do you want to bet?(in cents)", 1, actor.getWallet()));
+            } else {
+                System.out.println("Can't bet, not enough money.");
+                actor.stand();
+            }
+        }
+    }
+
     private void turn() {
-        //Player plays hand then changes hand
-        //The logic for if there is no other hand is in changehand method in actor
-//        getSelection(getActivePlayer());
-//        getActivePlayer().changeHand();
-//        if (getActivePlayer().getActiveHandCounter() != 0) {
-//            getSelection(getActivePlayer());
-//            getActivePlayer().changeHand();
-//        }
         while (getActivePlayer().isPlaying()) {
-            getSelection(getActivePlayer());
+            getSelection();
+        }
+
+    }
+
+    public void getSelection() {
+        displayActivePlayer();
+        CONTROL_MENU.forEach(System.out::println);
+        int selection = Validate.inputInt("", 1, 5);
+        switch (selection) {
+            case 1:
+                getActivePlayer().hit(getTopCard());
+                break;
+            case 2:
+                getActivePlayer().stand();
+                break;
+            case 3:
+                getActivePlayer().doubleDown(getTopCard());
+                break;
+            case 4:
+                getActivePlayer().split();
+                break;
+            case 5:
+                getActivePlayer().surrender();
+                break;
         }
 
     }
@@ -127,59 +161,6 @@ public class Table {
         }
     }
 
-
-    private void bet() {
-        for (Actor actor : actors) {
-            //TODO try bet here
-
-        }
-    }
-
-    public void getSelection(Actor actor) {
-        displayActivePlayer();
-        CONTROL_MENU.forEach(System.out::println);
-        int selection = Validate.inputInt("", 1, 10);
-        switch (selection) {
-            case 1:
-                hit();
-                break;
-            case 2:
-                stand();
-                break;
-            case 3:
-                doubleDown();
-                break;
-            case 4:
-                split();
-                break;
-            case 5:
-                surrender();
-                break;
-        }
-
-    }
-
-    private void hit() {
-        getActivePlayer().hit(getTopCard());
-    }
-
-    private void stand() {
-        getActivePlayer().stand();
-    }
-
-    private void doubleDown() {
-        getActivePlayer().doubleDown(getTopCard());
-    }
-
-    private void split() {
-        getActivePlayer().split();
-
-    }
-
-    private void surrender() {
-        getActivePlayer().surrender();
-
-    }
 
     private boolean roundIsNotOver() {
         int counter = 0;
@@ -221,7 +202,7 @@ public class Table {
         String name = scan.next();
         System.out.println("Enter Color: ");
         String color = scan.next();
-        actors.add(new Player(name, color, 50_00));
+        actors.add(new Player(name, color, 100_00));
     }
 
     private PlayingCards getTopCard() {

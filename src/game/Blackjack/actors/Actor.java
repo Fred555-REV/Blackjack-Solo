@@ -84,6 +84,7 @@ public abstract class Actor {
     public void split() {
         if (hand.get(0).rank.equals(hand.get(1).rank) && splitHand.isEmpty()) {
             splitHand.add(hand.remove(0));
+            betSplit += betHand;
         }
     }
 

@@ -33,10 +33,8 @@ public class Validate {
     }
 
     public static int inputInt(String prompt, int min, int max) {
-        if (!prompt.equals("")) {
             System.out.println(prompt);
-        }
-        int input = -1;
+        int input = min-1;
         do {
             try {
 
