@@ -3,21 +3,22 @@ package game.Blackjack;
 import game.Blackjack.actors.Actor;
 import game.Blackjack.actors.CasinoDealer;
 import game.Blackjack.actors.Player;
+import game.Blackjack.cards.CheatDeck;
 import game.Blackjack.cards.DeckInterface;
 import game.Blackjack.cards.PlayingCards;
 import game.Blackjack.cards.Deck;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Table {
-    //TODO test single large deck vs multiple normal decks
-    //ie. 208 cards in one deck shuffled or 52 cards in 4 decks shuffled and changing decks
     private static final Scanner scan = new Scanner(System.in);
-    private Deck deck;
-    //    private List<Card> deck = new ArrayList<>();
+    private DeckInterface deck;
     private List<Actor> actors = new ArrayList<>();
+    private CasinoDealer dealer;
     private Turn turn = new Turn(10);   //Right now max turns do nothing
     private final List<String> CONTROL_MENU = List.of(
             "(1) Hit",
@@ -28,15 +29,21 @@ public class Table {
     );
 
     public Table() {
-        deck = new Deck();
+        setDeck();
     }
 
-    private void changeDeck() {
-        //maybe have a change deck?
+    private void setDeck() {
+        System.out.println("Welcome To Blackjack");
+        System.out.println("press enter to continue");
+        String selection = scan.nextLine();
+        if (selection.toLowerCase(Locale.ROOT).equals("chicken")) {
+            deck = new CheatDeck();
+        } else {
+            deck = new Deck();
+        }
     }
 
     public void setup() {
-        System.out.println("Welcome To Blackjack");
 
         createDealer();
 
@@ -55,28 +62,17 @@ public class Table {
     }
 
     private void createDealer() {
-        int leader = Validate.inputInt("Will there be a dealer? (1) Yes\t (2) No", 1, 2);
-        if (leader == 1) {
+        if (Validate.inputInt("Will there be a dealer? (1) Yes\t (2) No", 1, 2) == 1) {
             System.out.println("Enter Name: ");
             String name = scan.next();
             if (Validate.CHEATS.contains(name)) {
-                actors.add(new CasinoDealer(name, "Cyan", 500_00));
+                actors.add(new CasinoDealer(name, "Black", 500_00));
             } else {
-                actors.add(new CasinoDealer(name, "White", 300_00));
+                actors.add(new CasinoDealer(name, "Black", 300_00));
             }
         }
     }
 
-    private void draw(int drawAmount) {
-        for (int i = 0; i < drawAmount; i++) {
-            for (Actor actor : actors) {
-//                System.out.println(actor.getName());
-//                System.out.println(deckC);
-                List<PlayingCards> playingCards = deck.getCards();
-                actor.getCard(playingCards.remove((playingCards.size() - 1)));
-            }
-        }
-    }
 
     //TODO Check over progress logically
     // at some point in the round there should be a bet method
@@ -89,7 +85,74 @@ public class Table {
             turn();
             turn.pass(actors);
         }
+        displayActors();
         clearTable();
+        if (Validate.inputInt("(1)Play Again\n(2)Exit", 1, 2) == 1) {
+            round(drawAmount);
+        }
+    }
+
+    private void draw(int drawAmount) {
+        for (int i = 0; i < drawAmount; i++) {
+            for (Actor actor : actors) {
+//                System.out.println(actor.getName());
+//                System.out.println(deckC);
+                actor.getCard(getTopCard());
+            }
+        }
+    }
+
+    private void bet() {
+        for (Actor actor : actors) {
+            //TODO try bet here
+            System.out.printf("%s has %s\n",
+                    actor.getName(),
+                    NumberFormat.getCurrencyInstance().format(actor.getWallet() / 100)
+            );
+            if (actor.getWallet() > 0) {
+                actor.bet(Validate.inputInt("How much do you want to bet?(in cents)", 1, actor.getWallet()));
+            } else {
+                System.out.println("Can't bet, not enough money.");
+                actor.stand();
+            }
+        }
+    }
+
+    private void turn() {
+        while (getActivePlayer().isPlaying()) {
+            getSelection();
+        }
+
+    }
+
+    public void getSelection() {
+        displayActivePlayer();
+        CONTROL_MENU.forEach(System.out::println);
+        int selection = Validate.inputInt("", 1, 5);
+        switch (selection) {
+            case 1:
+                getActivePlayer().hit(getTopCard());
+                break;
+            case 2:
+                getActivePlayer().stand();
+                break;
+            case 3:
+                getActivePlayer().doubleDown(getTopCard());
+                break;
+            case 4:
+                getActivePlayer().split();
+                break;
+            case 5:
+                getActivePlayer().surrender();
+                break;
+        }
+
+    }
+
+    //TODO at the end before clearing get results
+    // everyone gets compared to dealer
+    private void displayActors() {
+        actors.forEach(System.out::println);
     }
 
     private void clearTable() {
@@ -98,71 +161,6 @@ public class Table {
         }
     }
 
-    private void turn() {
-        //Player plays hand then changes hand
-        //The logic for if there is no other hand is in changehand method in actor
-        getSelection(getActivePlayer());
-        getActivePlayer().changeHand();
-        if (getActivePlayer().getActiveHandCounter() != 0) {
-            getSelection(getActivePlayer());
-            getActivePlayer().changeHand();
-        }
-
-
-    }
-
-    private void bet() {
-        for (Actor actor : actors) {
-            //TODO try bet here
-
-        }
-    }
-
-    public void getSelection(Actor actor) {
-        displayActivePlayer();
-        CONTROL_MENU.forEach(System.out::println);
-        int selection = Validate.inputInt("", 1, 10);
-        switch (selection) {
-            case 1:
-                hit();
-                break;
-            case 2:
-                stand();
-                break;
-            case 3:
-                doubleDown();
-                break;
-            case 4:
-                split();
-                break;
-            case 5:
-                surrender();
-                break;
-        }
-
-    }
-
-    private void hit() {
-        getActivePlayer().hit(getTopCard());
-    }
-
-    private void stand() {
-        getActivePlayer().stand();
-    }
-
-    private void doubleDown() {
-        getActivePlayer().doubleDown(getTopCard());
-    }
-
-    private void split() {
-        getActivePlayer().split();
-
-    }
-
-    private void surrender() {
-        getActivePlayer().surrender();
-
-    }
 
     private boolean roundIsNotOver() {
         int counter = 0;
@@ -204,15 +202,15 @@ public class Table {
         String name = scan.next();
         System.out.println("Enter Color: ");
         String color = scan.next();
-        actors.add(new Player(name, color, 50_00));
+        actors.add(new Player(name, color, 100_00));
     }
 
     private PlayingCards getTopCard() {
-        return deck.getCards().remove(deck.getCards().size() - 1);
+        return deck.deal();
 
     }
 
-    public Deck getDeck() {
+    public DeckInterface getDeck() {
         return deck;
     }
 }

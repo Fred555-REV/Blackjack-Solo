@@ -10,8 +10,8 @@ public class Main {
         //Assignment
         //setup creates dealer if needed/wanted and players
         //also creates the deck and for the assignment displays all cards drawn
-        table.setup();
-        System.out.println(table.getDeck().getCards().size());
+//        table.setup();
+//        System.out.println(table.getDeck().getCards().size());
     //Notes
         //hit seems to be working drawing one
         //split seems to work, sometimes

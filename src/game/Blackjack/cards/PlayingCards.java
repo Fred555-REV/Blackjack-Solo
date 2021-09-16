@@ -24,9 +24,9 @@ public class PlayingCards {
             "Hearts",
             "Spades"
     );
-    private final String name;
-    private final String rank;
-    private final String suit;
+    public final String name;
+    public final String rank;
+    public final String suit;
     private int position;
 
     protected PlayingCards(String rank, String suit) {
@@ -37,22 +37,21 @@ public class PlayingCards {
 
     }
 
-    public PlayingCards(String rank, String suit, int amount) {
-        this.rank = rank;
-        this.suit = suit;
+    public PlayingCards(int rankI, int suitI, int amount) {
+        this.rank = ranks.get(rankI - 1);
+        this.suit = suits.get(suitI - 1);
         name = String.format("%s of %s",
                 rank, suit);
 
     }
-
-    private int getValue(int valueI) {
-        //TODO make logic for ace either 1/11 as value
-        valueI++;
-        return valueI;
-    }
+        //TODO value should be assigned in table
+//    private int getValue(int valueI) {
+//        valueI++;
+//        return valueI;
+//    }
 
     public void move(int deckSize) {
-            position = (int) Math.floor(Math.random() * deckSize);
+        position = (int) Math.floor(Math.random() * deckSize);
     }
 
     public int compareTo(PlayingCards comparePlayingCards) {
