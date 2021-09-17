@@ -47,23 +47,13 @@ public abstract class Actor {
                 stand();
                 break;
             case 3:
-                if (getActiveHand().size() == 2) {
-                    doubleDown(deck.deal());
-                } else {
-                    System.out.println("Invalid Selection");
-                }
+                doubleDown(deck.deal());
                 break;
             case 4:
-                if (hand.get(0).rank.equals(hand.get(1).rank) && splitHand.isEmpty()) {
-                    split();
-                }
+                split();
                 break;
             case 5:
-                if (getActiveHand().size() == 2) {
-                    surrender();
-                } else {
-                    System.out.println("Invalid Selection");
-                }
+                surrender();
                 break;
         }
 
@@ -90,13 +80,17 @@ public abstract class Actor {
     }
 
     public void doubleDown(PlayingCards playingCards) {
-        if (getActiveHand().equals(hand)) {
-            bet(betHand);
+        if (getActiveHand().size() == 2) {
+            if (getActiveHand().equals(hand)) {
+                bet(betHand);
+            } else {
+                bet(betSplit);
+            }
+            hit(playingCards);
+            stand();
         } else {
-            bet(betSplit);
+            System.out.println("Invalid Selection");
         }
-        hit(playingCards);
-        stand();
     }
 
     //TODO split method,
@@ -106,19 +100,25 @@ public abstract class Actor {
     // In the case of cards worth 10 points, some casinos only allow splitting when the cards are the same rank.
     //!!Non-controlling players can opt to put up a second bet or not. If they do not, they only get paid or lose on one of the two post-split hands.!!
     private void split() {
-        splitHand.add(hand.remove(0));
-        betSplit += betHand;
+        if (hand.get(0).rank.equals(hand.get(1).rank) && splitHand.isEmpty()) {
+            splitHand.add(hand.remove(0));
+            betSplit += betHand;
+        }
     }
 
     //TODO surrender method,
     // Forfeit half the bet and end the hand immediately.
     private void surrender() {
-        if (getActiveHand().equals(hand)) {
-            betHand /= 2;
+        if (getActiveHand().size() == 2) {
+            if (getActiveHand().equals(hand)) {
+                betHand /= 2;
+            } else {
+                betSplit /= 2;
+            }
+            stand();
         } else {
-            betSplit /= 2;
+            System.out.println("Invalid Selection");
         }
-        stand();
     }
 
     //TODO where bet is called make a check for enough money
