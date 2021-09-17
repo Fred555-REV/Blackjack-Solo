@@ -97,7 +97,7 @@ public class Table {
             for (Actor actor : actors) {
 //                System.out.println(actor.getName());
 //                System.out.println(deckC);
-                actor.getCard(getTopCard());
+                actor.getCard(deck.deal());
             }
         }
     }
@@ -120,34 +120,13 @@ public class Table {
 
     private void turn() {
         while (getActivePlayer().isPlaying()) {
-            getSelection();
+            displayActivePlayer();
+            CONTROL_MENU.forEach(System.out::println);
+            getActivePlayer().getSelection(deck);
         }
 
     }
 
-    public void getSelection() {
-        displayActivePlayer();
-        CONTROL_MENU.forEach(System.out::println);
-        int selection = Validate.inputInt("", 1, 5);
-        switch (selection) {
-            case 1:
-                getActivePlayer().hit(getTopCard());
-                break;
-            case 2:
-                getActivePlayer().stand();
-                break;
-            case 3:
-                getActivePlayer().doubleDown(getTopCard());
-                break;
-            case 4:
-                getActivePlayer().split();
-                break;
-            case 5:
-                getActivePlayer().surrender();
-                break;
-        }
-
-    }
 
     //TODO at the end before clearing get results
     // everyone gets compared to dealer
@@ -203,11 +182,6 @@ public class Table {
         System.out.println("Enter Color: ");
         String color = scan.next();
         actors.add(new Player(name, color, 100_00));
-    }
-
-    private PlayingCards getTopCard() {
-        return deck.deal();
-
     }
 
     public DeckInterface getDeck() {
