@@ -16,9 +16,11 @@ public abstract class Actor {
     protected int activeHandCounter;
     protected List<PlayingCards> hand = new ArrayList<>();
     protected List<PlayingCards> splitHand = new ArrayList<>();
+    protected int handValue;
+    protected int splitValue;
     protected int betHand;
     protected int betSplit;
-    private boolean isPlaying;
+    protected boolean isPlaying;
 
 
     public Actor(String name, String color, int wallet) {
@@ -37,89 +39,16 @@ public abstract class Actor {
     // refactor everything so instead of one action per hand
     // to play each hand until a stand or end
 
-    public void getSelection(DeckInterface deck) {
-        int selection = Validate.inputInt("", 1, 5);
-        switch (selection) {
-            case 1:
-                hit(deck.deal());
-                break;
-            case 2:
-                stand();
-                break;
-            case 3:
-                doubleDown(deck.deal());
-                break;
-            case 4:
-                split();
-                break;
-            case 5:
-                surrender();
-                break;
-        }
+    public abstract void getSelection(DeckInterface deck);
+    abstract void hit(PlayingCards card);
+    abstract void stand();
+    abstract void doubleDown(PlayingCards card);
+    abstract void split();
+    abstract void surrender();
 
-    }
 
     //TODO hit method,
-    public void hit(PlayingCards playingCards) {
-        getActiveHand().add(playingCards);
-    }
 
-//    abstract void stand();
-
-    public void stand() {
-        //TODO Check over progress logically
-        // make sure everything makes sense
-        if (splitHand.isEmpty()) {
-            isPlaying = false;
-        } else if (activeHandCounter == 1) {
-            activeHandCounter = 2;
-        } else {
-            isPlaying = false;
-        }
-
-    }
-
-    public void doubleDown(PlayingCards playingCards) {
-        if (getActiveHand().size() == 2) {
-            if (getActiveHand().equals(hand)) {
-                bet(betHand);
-            } else {
-                bet(betSplit);
-            }
-            hit(playingCards);
-            stand();
-        } else {
-            System.out.println("Invalid Selection");
-        }
-    }
-
-    //TODO split method,
-    // Create two hands from a starting hand where both cards are the same value.
-    //Each new hand gets another card so that the player has two starting hands. This requires an additional bet on the second hand.
-    //The two hands are played out independently, and the wager on each hand is won or lost independently.
-    // In the case of cards worth 10 points, some casinos only allow splitting when the cards are the same rank.
-    //!!Non-controlling players can opt to put up a second bet or not. If they do not, they only get paid or lose on one of the two post-split hands.!!
-    private void split() {
-        if (hand.get(0).rank.equals(hand.get(1).rank) && splitHand.isEmpty()) {
-            splitHand.add(hand.remove(0));
-            betSplit += betHand;
-        }
-    }
-
-    //TODO surrender method,
-    // Forfeit half the bet and end the hand immediately.
-    private void surrender() {
-        if (getActiveHand().size() == 2) {
-            if (getActiveHand().equals(hand)) {
-                betHand /= 2;
-            } else {
-                betSplit /= 2;
-            }
-            stand();
-        } else {
-            System.out.println("Invalid Selection");
-        }
-    }
 
     //TODO where bet is called make a check for enough money
     public int bet(int amount) {
@@ -171,10 +100,6 @@ public abstract class Actor {
 
     public String getName() {
         return name;
-    }
-
-    public String getColor() {
-        return color;
     }
 
     public int getWallet() {
