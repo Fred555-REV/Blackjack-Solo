@@ -7,11 +7,12 @@ import game.Blackjack.cards.PlayingCards;
 public class AutoDealer extends Actor {
     public AutoDealer(String name, String color, int wallet) {
         super(name, color, wallet);
+        isPlaying = true;
     }
 
     @Override
     public void getSelection(DeckInterface deck) {
-        if (handValue <= 21) {
+        if (getValue(1) >= 17) {
             stand();
         } else {
             hit(deck.deal());

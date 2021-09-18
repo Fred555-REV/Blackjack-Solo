@@ -129,7 +129,7 @@ public enum Color {
     }
 
     public static Object getColor(Actor actor) {
-        switch (actor.getColor().toUpperCase(Locale.ROOT)) {
+        switch (actor.color.toUpperCase(Locale.ROOT)) {
             case "RED":
                 return RED;
             case "ORANGE":
@@ -153,6 +153,28 @@ public enum Color {
 //                return color;
 //            }
 //        }
+        return Color.RESET;
+    }
+
+    public static Object getColor(String color) {
+        switch (color.toUpperCase(Locale.ROOT)) {
+            case "RED":
+                return RED;
+            case "ORANGE":
+                return ORANGE;
+            case "BLUE":
+                return BLUE;
+            case "GREEN":
+                return GREEN;
+            case "YELLOW":
+                return YELLOW;
+            case "CYAN":
+                return CYAN;
+            case "MAGENTA":
+                return MAGENTA;
+            case "BLACK":
+                return BLACK;
+        }
         return Color.RESET;
     }
 
