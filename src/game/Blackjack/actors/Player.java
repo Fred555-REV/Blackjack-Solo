@@ -8,11 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player extends Actor {
-    protected String name;
-    protected String color;
-    protected int wallet;
-    private boolean isPlaying;
-
     public Player(String name, String color, int currency) {
         super(name, color, currency);
     }
@@ -23,6 +18,7 @@ public class Player extends Actor {
         switch (selection) {
             case 1:
                 hit(deck.deal());
+                getValue();
                 break;
             case 2:
                 stand();

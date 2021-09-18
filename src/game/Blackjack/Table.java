@@ -1,6 +1,7 @@
 package game.Blackjack;
 
 import game.Blackjack.actors.Actor;
+import game.Blackjack.actors.AutoDealer;
 import game.Blackjack.actors.CasinoDealer;
 import game.Blackjack.actors.Player;
 import game.Blackjack.cards.CheatDeck;
@@ -9,16 +10,13 @@ import game.Blackjack.cards.PlayingCards;
 import game.Blackjack.cards.Deck;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 public class Table {
     private static final Scanner scan = new Scanner(System.in);
     private DeckInterface deck;
     private List<Actor> actors = new ArrayList<>();
-    private CasinoDealer dealer;
+    private AutoDealer dealer;
     private Turn turn = new Turn(10);   //Right now max turns do nothing
     private final List<String> CONTROL_MENU = List.of(
             "(1) Hit",
@@ -45,9 +43,10 @@ public class Table {
 
     public void setup() {
 
-        createDealer();
-
+//        createDealer();
+        dealer = new AutoDealer("AutoDealer", "Black", 100_000_00);
         createPlayers();
+        actors.add(dealer);
         //deck creation happens at setUp for now
         deck.createDeck();
         deck.shuffle();
@@ -62,6 +61,7 @@ public class Table {
     }
 
     private void createDealer() {
+        //TODO it would be fun to allow someone to play as dealer
         if (Validate.inputInt("Will there be a dealer? (1) Yes\t (2) No", 1, 2) == 1) {
             System.out.println("Enter Name: ");
             String name = scan.next();
@@ -81,14 +81,37 @@ public class Table {
         System.out.println("Drawing Cards...");
         draw(drawAmount);
         bet();
+        displayTable();
         while (roundIsNotOver()) {
             turn();
             turn.pass(actors);
         }
-        displayActors();
+        displayResults();
+
         clearTable();
         if (Validate.inputInt("(1)Play Again\n(2)Exit", 1, 2) == 1) {
             round(drawAmount);
+        }
+    }
+
+    private void displayTable() {
+        if (dealer.isPlaying()) {
+            if (Objects.nonNull(dealer)) {
+                System.out.println("The dealer has:");
+                System.out.println(dealer.getHand().get(0));
+            }
+            System.out.println("Players show");
+            for (Actor actor : actors) {
+                if (actor instanceof Player) {
+                    System.out.println(actor.name + " has:");
+                    System.out.println(actor.getHand().get(0));
+                }
+            }
+        } else {
+            //TODO finish for dealer that is player
+            actors.forEach(System.out::println);
+            System.out.println("press enter to continue");
+            scan.nextLine();
         }
     }
 
@@ -104,25 +127,32 @@ public class Table {
 
     private void bet() {
         for (Actor actor : actors) {
-            //TODO try bet here
-            System.out.printf("%s has %s\n",
-                    actor.getName(),
-                    NumberFormat.getCurrencyInstance().format(actor.getWallet() / 100)
-            );
-            if (actor.getWallet() > 0) {
-                actor.bet(Validate.inputInt("How much do you want to bet?(in cents)", 1, actor.getWallet()));
-            } else {
-                System.out.println("Can't bet, not enough money.");
-                
+            if (actor instanceof Player) {
+                //TODO try bet here
+                System.out.printf("%s has %s\n",
+                        actor.getName(),
+                        NumberFormat.getCurrencyInstance().format(actor.getWallet() / 100.0)
+                );
+                if (actor.getWallet() > 0) {
+                    actor.bet(Validate.inputInt("How much do you want to bet?(in cents)", 1, actor.getWallet()));
+                } else {
+                    System.out.println("Can't bet, not enough money.");
+
+                }
             }
         }
     }
 
     private void turn() {
         while (getActivePlayer().isPlaying()) {
-            displayActivePlayer();
-            CONTROL_MENU.forEach(System.out::println);
-            getActivePlayer().getSelection(deck);
+            if (getActivePlayer() instanceof Player) {
+                displayActivePlayer();
+                CONTROL_MENU.forEach(System.out::println);
+                getActivePlayer().getSelection(deck);
+                System.out.println(getActivePlayer());
+            } else {
+                getActivePlayer().getSelection(deck);
+            }
         }
 
     }
@@ -130,8 +160,36 @@ public class Table {
 
     //TODO at the end before clearing get results
     // everyone gets compared to dealer
-    private void displayActors() {
-        actors.forEach(System.out::println);
+    private void displayResults() {
+        if (Objects.nonNull(dealer)) {
+            dealer.setHandValue();
+            System.out.println(dealer);
+        }
+        for (Actor actor : actors) {
+            if (actor instanceof Player) {
+                System.out.println(actor);
+
+                for (int i = 1; i < 3; i++) {
+                    if (dealer.getValue() <= 21 && dealer.getValue(1) > actor.getValue(i) || actor.getValue(i) > 21) {
+                        System.out.println("Loses on deck " + i);
+                        actor.result(false, i);
+                    } else if (dealer.getValue() > 21 || dealer.getValue(i) < actor.getValue(i)) {
+                        //if the value is greater than the dealer and <= 21
+                        System.out.println("Wins on deck " + i);
+                        actor.result(true, i);
+                    } else {
+                        System.out.println("Pushes on deck " + i);
+                    }
+                    System.out.println("against dealer's " + dealer.getValue(1));
+                    if (!actor.hasSplit()) {
+                        break;
+                    }
+                }
+                System.out.println("press enter to continue");
+                scan.nextLine();
+            }
+
+        }
     }
 
     private void clearTable() {
@@ -172,8 +230,7 @@ public class Table {
         } else {
             hand = "Split Hand";
         }
-        System.out.printf("Using %s\n%s\n", hand, getActivePlayer().getActiveHand());
-
+        System.out.printf("Using %s%s\n%s\n", hand, Color.RESET, getActivePlayer().getActiveHand());
     }
 
     private void addPlayer() {

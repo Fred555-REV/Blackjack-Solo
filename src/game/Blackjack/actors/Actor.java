@@ -10,8 +10,8 @@ import java.util.List;
 
 public abstract class Actor {
     // Each actor has a hand and each table has a deck
-    protected String name;
-    protected String color;
+    public final String name;
+    public final String color;
     protected int wallet;
     protected int activeHandCounter;
     protected List<PlayingCards> hand = new ArrayList<>();
@@ -40,10 +40,15 @@ public abstract class Actor {
     // to play each hand until a stand or end
 
     public abstract void getSelection(DeckInterface deck);
+
     abstract void hit(PlayingCards card);
+
     abstract void stand();
+
     abstract void doubleDown(PlayingCards card);
+
     abstract void split();
+
     abstract void surrender();
 
 
@@ -61,6 +66,14 @@ public abstract class Actor {
         }
     }
 
+    public int getBet(int betNum) {
+        if (betNum == 1) {
+            return betHand;
+        } else {
+            return betSplit;
+        }
+    }
+
     //TODO Check over progress logically
     // make sure everything makes sense
 
@@ -74,6 +87,13 @@ public abstract class Actor {
 
     }
 
+    public boolean hasSplit() {
+        if (splitHand.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
     public List<PlayingCards> getActiveHand() {
         if (activeHandCounter == 2) {
             return splitHand;
@@ -81,11 +101,11 @@ public abstract class Actor {
         return hand;
     }
 
-    public void result(Boolean didWin) {
+    public void result(Boolean didWin, int betNum) {
         if (didWin) {
-            gain(bet(0));
+            gain(getBet(betNum)*2);
         } else {
-            lose(bet(0));
+            lose(getBet(betNum));
         }
 
     }
@@ -114,11 +134,65 @@ public abstract class Actor {
         return isPlaying;
     }
 
+    public void setHandValue() {
+        boolean hasAce = false;
+        handValue = 0;
+        for (PlayingCards card : hand) {
+            handValue += card.value;
+            if (card.rank.equals("A")) {
+                hasAce = true;
+            }
+        }
+        if (handValue > 21 && hasAce) {
+            handValue -= 10;
+        }
+    }
+
+    public void setSplitValue() {
+        boolean hasAce = false;
+        splitValue = 0;
+        for (PlayingCards card : hand) {
+            splitValue += card.value;
+            if (card.rank.equals("A")) {
+                hasAce = true;
+            }
+        }
+        if (splitValue > 21 && hasAce) {
+            splitValue -= 10;
+        }
+    }
+
+    public int getValue() {
+        if (getActiveHand() == hand) {
+            setHandValue();
+            if (handValue > 21) {
+                stand();
+            }
+            return handValue;
+        } else {
+            setSplitValue();
+            if (splitValue > 21) {
+                stand();
+            }
+            return splitValue;
+        }
+    }
+
+    public int getValue(int handNum) {
+        if (handNum == 1) {
+            setHandValue();
+            return handValue;
+        } else {
+            setSplitValue();
+            return splitValue;
+        }
+    }
+
     @Override
     public String toString() {
         return String.format(
-                "%sActor: %s,\tBets: {Main: %s\tSplit: %s}\nHands: {Main: %s\nSplit: %s}%s",
-                Color.getColor(this), name, betHand, betSplit, hand, splitHand, Color.RESET
+                "%sActor: %s,\tBets: {Main: %s\tSplit: %s}%s\nHands: {Main: %s\nSplit: %s}%s",
+                Color.getColor(this), name, betHand, betSplit, Color.RESET, hand, splitHand, Color.RESET
         );
     }
 }
