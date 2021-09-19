@@ -151,7 +151,7 @@ public abstract class Actor {
     public void setSplitValue() {
         boolean hasAce = false;
         splitValue = 0;
-        for (PlayingCards card : hand) {
+        for (PlayingCards card : splitHand) {
             splitValue += card.value;
             if (card.rank.equals("A")) {
                 hasAce = true;
