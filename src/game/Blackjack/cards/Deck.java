@@ -29,7 +29,7 @@ public class Deck implements DeckInterface {
     public void shuffle() {
         cards.forEach(card -> card.move(cards.size()));
         cards.sort(PlayingCards::compareTo);
-        System.out.println(cards);
+//        System.out.println(cards);
     }
 
     @Override
