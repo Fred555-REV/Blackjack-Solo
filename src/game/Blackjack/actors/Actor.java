@@ -103,7 +103,7 @@ public abstract class Actor {
 
     public void result(Boolean didWin, int betNum) {
         if (didWin) {
-            gain(getBet(betNum)*2);
+            gain(getBet(betNum) * 2);
         } else {
             lose(getBet(betNum));
         }
@@ -135,30 +135,34 @@ public abstract class Actor {
     }
 
     public void setHandValue() {
-        boolean hasAce = false;
+        int aceCount = 0;
         handValue = 0;
         for (PlayingCards card : hand) {
             handValue += card.value;
             if (card.rank.equals("A")) {
-                hasAce = true;
+                aceCount++;
             }
         }
-        if (handValue > 21 && hasAce) {
-            handValue -= 10;
+        if (handValue > 21) {
+            for (int i = 0; i < aceCount; i++) {
+                handValue -= 10;
+            }
         }
     }
 
     public void setSplitValue() {
-        boolean hasAce = false;
+        int aceCount = 0;
         splitValue = 0;
         for (PlayingCards card : splitHand) {
             splitValue += card.value;
             if (card.rank.equals("A")) {
-                hasAce = true;
+                aceCount++;
             }
         }
-        if (splitValue > 21 && hasAce) {
-            splitValue -= 10;
+        if (splitValue > 21) {
+            for (int i = 0; i < aceCount; i++) {
+                splitValue -= 10;
+            }
         }
     }
 
