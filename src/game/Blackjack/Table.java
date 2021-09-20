@@ -170,10 +170,10 @@ public class Table {
                 System.out.println(actor);
 
                 for (int i = 1; i < 3; i++) {
-                    if (dealer.getValue() <= 21 && dealer.getValue(1) > actor.getValue(i) || actor.getValue(i) > 21) {
+                    if (dealer.getValue(1) <= 21 && dealer.getValue(1) > actor.getValue(i) || actor.getValue(i) > 21) {
                         System.out.println("Loses on deck " + i);
                         actor.result(false, i);
-                    } else if (dealer.getValue() > 21 || dealer.getValue(i) < actor.getValue(i)) {
+                    } else if (dealer.getValue(1) > 21 || dealer.getValue(1) < actor.getValue(i)) {
                         //if the value is greater than the dealer and <= 21
                         System.out.println("Wins on deck " + i);
                         actor.result(true, i);

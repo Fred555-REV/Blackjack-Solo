@@ -58,7 +58,7 @@ public class Player extends Actor {
 
     @Override
     protected void doubleDown(PlayingCards playingCards) {
-        if (getActiveHand().size() == 2) {
+        if (getActiveHand().size() <= 2) {
             if (getActiveHand().equals(hand)) {
                 bet(betHand);
             } else {
