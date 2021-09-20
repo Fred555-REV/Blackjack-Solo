@@ -80,8 +80,8 @@ public class Table {
     public void round(int drawAmount) {
         System.out.println("Drawing Cards...");
         draw(drawAmount);
-        displayTable();
         bet();
+        displayTable();
         while (roundIsNotOver()) {
             turn();
             turn.pass(actors);
