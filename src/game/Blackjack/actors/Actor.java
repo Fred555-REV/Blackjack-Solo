@@ -103,7 +103,7 @@ public abstract class Actor {
 
     public void result(Boolean didWin, int betNum) {
         if (didWin) {
-            gain(getBet(betNum) * 2);
+            gain(getBet(betNum));
         } else {
             lose(getBet(betNum));
         }
