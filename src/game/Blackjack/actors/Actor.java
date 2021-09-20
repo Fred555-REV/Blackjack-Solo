@@ -57,6 +57,9 @@ public abstract class Actor {
 
     //TODO where bet is called make a check for enough money
     public int bet(int amount) {
+        if (amount == 0) {
+            isPlaying = false;
+        }
         if (getActiveHand().equals(hand)) {
             betHand += amount;
             return betHand;
