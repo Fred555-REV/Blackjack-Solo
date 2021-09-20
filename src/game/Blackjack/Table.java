@@ -136,8 +136,8 @@ public class Table {
                 if (actor.getWallet() > 0) {
                     actor.bet(Validate.inputInt("How much do you want to bet?(in cents)", 1, actor.getWallet()));
                 } else {
-                    System.out.println("Can't bet, not enough money.");
-                    actor.bet(0);
+                    System.out.println("Can't bet, you get kicked out.");
+                    actors.remove(actor);
                 }
             }
         }
