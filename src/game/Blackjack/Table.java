@@ -126,6 +126,7 @@ public class Table {
     }
 
     private void bet() {
+        List<Actor> losers = new ArrayList<>();
         for (Actor actor : actors) {
             if (actor instanceof Player) {
                 //TODO try bet here
@@ -137,10 +138,11 @@ public class Table {
                     actor.bet(Validate.inputInt("How much do you want to bet?(in cents)", 1, actor.getWallet()));
                 } else {
                     System.out.println("Can't bet, you get kicked out.");
-                    actors.remove(actor);
+                    losers.add(actor);
                 }
             }
         }
+        actors.removeAll(losers);
     }
 
     private void turn() {
