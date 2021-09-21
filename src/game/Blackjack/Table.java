@@ -54,7 +54,7 @@ public class Table {
     }
 
     private void createPlayers() {
-        int playerAmount = Validate.inputInt("How many players will be playing?", 1, 5);
+        int playerAmount = Validate.inputInt("How many players will be playing?", 1,12 );
         for (int i = 0; i < playerAmount; i++) {
             addPlayer();
         }
@@ -135,7 +135,7 @@ public class Table {
                         NumberFormat.getCurrencyInstance().format(actor.getWallet() / 100.0)
                 );
                 if (actor.getWallet() > 0) {
-                    actor.bet(Validate.inputInt("How much do you want to bet?(in cents)", 1, actor.getWallet()));
+                    actor.bet(Validate.inputInt("How much do you want to bet, minimum 5$?(in cents)", 500, actor.getWallet()));
                 } else {
                     System.out.println("Can't bet, you get kicked out.");
                     losers.add(actor);
@@ -240,7 +240,7 @@ public class Table {
         String name = scan.next();
         System.out.println("Enter Color: ");
         String color = scan.next();
-        actors.add(new Player(name, color, 100_00));
+        actors.add(new Player(name, color, 500_00));
     }
 
     public DeckInterface getDeck() {
