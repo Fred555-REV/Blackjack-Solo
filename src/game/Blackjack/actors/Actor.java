@@ -146,8 +146,8 @@ public abstract class Actor {
                 aceCount++;
             }
         }
-        if (handValue > 21) {
-            for (int i = 0; i < aceCount; i++) {
+        for (int i = 0; i < aceCount; i++) {
+            if (handValue > 21) {
                 handValue -= 10;
             }
         }
